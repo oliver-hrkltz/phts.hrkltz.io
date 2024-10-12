@@ -1,8 +1,29 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
    <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>phts.hrkltz</title>
+      <title>phts.hrkltz.io</title>
+      <base href="/">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Welcome to phts.hrkltz.io!">
+      <link rel="preconnect" href="https://fonts.gstatic.com" />
+      <style>
+          @font-face {
+              font-family: 'Outfit';
+              font-style: normal;
+              font-weight: 500;
+              src: url(https://fonts.gstatic.com/s/outfit/v6/QGYvz_MVcBeNP4NJtEtqUYLknw.woff2) format('woff2');
+              unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+          }
+          @font-face {
+              font-family: 'Outfit';
+              font-style: normal;
+              font-weight: 600;
+              src: url(https://fonts.gstatic.com/s/outfit/v6/QGYvz_MVcBeNP4NJtEtqUYLknw.woff2) format('woff2');
+              unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+          }
+      </style>
       <style>
          html, body {
             margin: unset;
@@ -10,13 +31,13 @@
 
          body {
             background-color: #f2f2f7;
+            font-family: 'Outfit';
          }
 
          div#gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 0px;
-            padding: 10px;
          }
 
          div#gallery > img {
@@ -52,10 +73,17 @@
 
          div#countryList > div {
             padding: 10px 20px;
-            border-bottom: #f2f2f7 solid 1px;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+         }
+
+         div#countryList > div:not(:last-child) {
+            border-bottom: #f2f2f7 solid 1px;
+         }
+         
+         div#countryList > div > svg {
+            width: 24px;
          }
       </style>
    </head>
@@ -85,12 +113,6 @@
 
       buildPage0();
 
-      /*
-      <div id="countryList">
-         <div><div>[CH] Switzerland</div><div>></div></div>
-         <div><div>[DE] Germany</div><div>></div></div>
-      </div>
-      */
       function buildPage0() {
          const bodyElement = document.body;
          bodyElement.innerHTML = '';
@@ -99,36 +121,17 @@
          bodyElement.appendChild(countryListElement);
          Object.keys(imageObject).forEach((countryCode) => {
             const div = document.createElement('div');
-            div.innerHTML = `<div>${countryCode}</div><div>></div>`;
+            div.innerHTML = `<div>${countryCode}</div><svg fill="#828287" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.343 18.657a1 1 0 0 1-.707-1.707l4.95-4.95-4.95-4.95a1 1 0 0 1 1.414-1.414l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-.707.293z"></path></svg>`;
             div.onclick = function() {
                history.pushState({ page: 1, countryCode: countryCode }, null);
                buildPage1(countryCode);
             }
             countryListElement.appendChild(div);
          });
-
-         return;
-        /*const body = document.body;
-         body.innerHTML = '';
-         const div = document.createElement('div');
-         div.id = 'gallery';
-         body.appendChild(div);
-
-         Object.keys(imageObject).forEach((countryCode) => {
-            const imgElement = document.createElement("img");
-            imgElement.alt = 'Random image';
-            imgElement.loading = 'lazy';
-            imgElement.src = `https://flagsapi.com/${countryCode}/flat/64.png`
-            imgElement.onclick = function() {
-               history.pushState({ page: 1, countryCode: countryCode }, null);
-               buildPage1(countryCode);
-            }
-            div.appendChild(imgElement);
-         });*/
       }
 
 
-      function buildPage1(countryCode) {
+      function buildPage1(countryCode, rebuild = true) {
          const body = document.body;
          body.innerHTML = '';
          const div = document.createElement('div');
@@ -152,12 +155,12 @@
       function buildPage2(countryCode, fileName) {
          const body = document.body;
          body.innerHTML = '';
-         /*const imgElement = document.createElement("img");
+         const imgElement = document.createElement("img");
          imgElement.id = 'picture';
          imgElement.alt = `${countryCode}/${fileName}`;
          imgElement.loading = 'lazy';
-         imgElement.src = `https://incredible-trifle-d84e58.netlify.app/.netlify/images?url=data/${countryCode}/${fileName}`
-         body.appendChild(imgElement);*/
+         imgElement.src = `https://media.githubusercontent.com/media/oliver-hrkltz/phts.hrkltz.io/refs/heads/main/data/${countryCode}/${fileName}`;
+         body.appendChild(imgElement);
       }
    </script>
 </html>
