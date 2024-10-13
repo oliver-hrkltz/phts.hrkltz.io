@@ -5,10 +5,10 @@ listImages() {
     echo $(cd "$1" && find *.webp -maxdepth 1 -type f -exec printf '%s;' {} \;)
 }
 
-# List all countries inside the src/assets/image folder.
+# List all countries inside the docs/assets/image folder.
 listCountries() {
-    # Get all directories inside the src/assets/image folder. (Switzerland;Germany;...)
-    echo $(cd "src/assets/image" && find * -maxdepth 1 -type d -exec printf '%s;' {} \;)
+    # Get all directories inside the docs/assets/image folder. (Switzerland;Germany;...)
+    echo $(cd "docs/assets/image" && find * -maxdepth 1 -type d -exec printf '%s;' {} \;)
 }
 
 # Convert a bash list to a JavaScript array.
@@ -49,7 +49,7 @@ IFS=';' read -a COUNTRY_ARRAY <<< "$COUNTRY_LIST"
 IMAGE_OBJECT_JS=""
 
 for COUNTRY in "${COUNTRY_ARRAY[@]}"; do
-    IMAGE_ARRAY=$(listImages "src/assets/image/${COUNTRY}/")
+    IMAGE_ARRAY=$(listImages "docs/assets/image/${COUNTRY}/")
     IMAGE_OBJECT_JS+="\"$COUNTRY\": $(bashListToJsArray "${IMAGE_ARRAY[@]}"), "
 done
 
