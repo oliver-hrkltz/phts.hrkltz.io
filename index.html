@@ -87,31 +87,42 @@
          }
       </style>
    </head>
-   <body>
+   <body onload="onload()">
    </body>
    <script>
       const galleryDiv = document.getElementById('gallery');
       /// IMAGE_OBJECT...
-      const imageObject = {"AT": ["202300.webp"],"CH": ["202200.webp","202201.webp","202202.webp","202203.webp","202204.webp","202400.webp"],"DE": ["202200.webp","202201.webp","202202.webp"],"ES": ["202300.webp","202301.webp","202302.webp","202303.webp","202304.webp"],"FI": ["202200.webp","202201.webp","202202.webp","202203.webp","202204.webp","202205.webp","202206.webp","202207.webp","202208.webp"],"SE": ["202200.webp"],"US": ["202300.webp"]};
+      const imageObject = {"Austria": ["202300.webp"], "Finland": ["202200.webp", "202201.webp", "202202.webp", "202203.webp", "202204.webp", "202205.webp", "202206.webp", "202207.webp", "202208.webp"], "Germany": ["202200.webp", "202201.webp", "202202.webp"], "Spain": ["202300.webp", "202301.webp", "202302.webp", "202303.webp", "202304.webp"], "Sweden": ["202200.webp"], "Switzerland": ["202200.webp", "202201.webp", "202202.webp", "202203.webp", "202204.webp", "202400.webp"], "United States": ["202300.webp"]};
       /// ...IMAGE_OBJECT
+      buildPage0();
+
 
       // Event listener for back/forward button navigation
       window.onpopstate = function(event) {
-         if (event.state) {
-            switch (event.state.page) {
+         loadPageFromHistory();
+      };
+
+
+      function loadPageFromHistory() {
+         if (history.state) {
+            switch (history.state.page) {
                case 1:
-                  buildPage1(event.state.countryCode);
+                  buildPage1(history.state.countryCode);
                   break;
                case 2:
-                  buildPage2(event.state.countryCode, event.state.fileName);
+                  buildPage2(history.state.countryCode, history.state.fileName);
                   break;
             };
          } else {
             buildPage0();
          };
       };
+      
 
-      buildPage0();
+      function onload() {
+         loadPageFromHistory();
+      };
+
 
       function buildPage0() {
          const bodyElement = document.body;
@@ -120,23 +131,23 @@
          countryListElement.id = 'countryList';
          bodyElement.appendChild(countryListElement);
          Object.keys(imageObject).forEach((countryCode) => {
-            const div = document.createElement('div');
-            div.innerHTML = `<div>${countryCode}</div><svg fill="#828287" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.343 18.657a1 1 0 0 1-.707-1.707l4.95-4.95-4.95-4.95a1 1 0 0 1 1.414-1.414l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-.707.293z"></path></svg>`;
-            div.onclick = function() {
-               history.pushState({ page: 1, countryCode: countryCode }, null);
+            const divElement = document.createElement('div');
+            divElement.innerHTML = `<div>${countryCode}</div><svg fill="#828287" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.343 18.657a1 1 0 0 1-.707-1.707l4.95-4.95-4.95-4.95a1 1 0 0 1 1.414-1.414l5.657 5.657a1 1 0 0 1 0 1.414l-5.657 5.657a1 1 0 0 1-.707.293z"></path></svg>`;
+            divElement.onclick = function() {
+               history.pushState({ 'page': 1, 'countryCode': countryCode }, null);
                buildPage1(countryCode);
-            }
-            countryListElement.appendChild(div);
+            };
+            countryListElement.appendChild(divElement);
          });
-      }
+      };
 
 
-      function buildPage1(countryCode, rebuild = true) {
-         const body = document.body;
-         body.innerHTML = '';
-         const div = document.createElement('div');
-         div.id = 'gallery';
-         body.appendChild(div);
+      function buildPage1(countryCode) {
+         const bodyElement = document.body;
+         bodyElement.innerHTML = '';
+         const divElement = document.createElement('div');
+         divElement.id = 'gallery';
+         bodyElement.appendChild(divElement);
 
          imageObject[countryCode].forEach((fileName) => {
             const imgElement = document.createElement("img");
@@ -144,23 +155,23 @@
             imgElement.loading = 'lazy';
             imgElement.src = `https://media.githubusercontent.com/media/oliver-hrkltz/phts.hrkltz.io/refs/heads/main/data/${countryCode}/${fileName}`;
             imgElement.onclick = function() {
-               history.pushState({ page: 1, countryCode: countryCode }, null);
+               history.pushState({ 'page': 2, 'countryCode': countryCode, 'fileName': fileName }, null);
                buildPage2(countryCode, fileName);
-            }
-            div.appendChild(imgElement);
+            };
+            divElement.appendChild(imgElement);
          });
-      }
+      };
 
 
       function buildPage2(countryCode, fileName) {
-         const body = document.body;
-         body.innerHTML = '';
+         const bodyElement = document.body;
+         bodyElement.innerHTML = '';
          const imgElement = document.createElement("img");
          imgElement.id = 'picture';
          imgElement.alt = `${countryCode}/${fileName}`;
          imgElement.loading = 'lazy';
          imgElement.src = `https://media.githubusercontent.com/media/oliver-hrkltz/phts.hrkltz.io/refs/heads/main/data/${countryCode}/${fileName}`;
-         body.appendChild(imgElement);
-      }
+         bodyElement.appendChild(imgElement);
+      };
    </script>
 </html>

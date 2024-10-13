@@ -1,20 +1,30 @@
 #!/bin/bash
 
-# List the content of a directory
-listDirectoryContent() {
-    TARGET_FOLDER=$1
-    FILES=$(ls -1 "$TARGET_FOLDER")
-    echo $FILES
+# List all *.webp files inside a directory.
+listImages() {
+    echo $(cd "$1" && find *.webp -maxdepth 1 -type f -exec printf '%s;' {} \;)
 }
 
-# Convert a bash array to a JavaScript array
-bashArrayToJsArray() {
-    BASH_ARRAY=$1
+# List all countries inside the data folder.
+listCountries() {
+    # Get all directories inside the data folder. (Switzerland;Germany;...)
+    echo $(cd "data" && find * -maxdepth 1 -type d -exec printf '%s;' {} \;)
+}
+
+# Convert a bash list to a JavaScript array.
+bashListToJsArray() {
+    BASH_LIST=$1
+
+    # Convert the custom list string (Element1;Element2;..) to an array.
+    IFS=';' read -a BASH_ARRAY <<< "$BASH_LIST"
+
     JS_ARRAY=""
-    for ITEM in $BASH_ARRAY; do
-        JS_ARRAY+="\"$ITEM\","
+
+    for ITEM in "${BASH_ARRAY[@]}"; do
+        JS_ARRAY+="\"$ITEM\", "
     done
-    JS_ARRAY="[${JS_ARRAY%,}]"
+
+    JS_ARRAY="[${JS_ARRAY%, }]"
     echo $JS_ARRAY
 }
 
@@ -29,23 +39,21 @@ insertIntoHtmlFile() {
     }" "index.html"
 }
 
+
 # 1. Step: Get all country codes.
-COUNTRY_CODE_ARRAY=$(listDirectoryContent "data/")
+COUNTRY_LIST=$(listCountries)
+# Convert the custom list string (Element1;Element2;..) to an array.
+IFS=';' read -a COUNTRY_ARRAY <<< "$COUNTRY_LIST"
 
 # 2. Step: Get all image arrays per country code and write them into the HTML file.
 IMAGE_OBJECT_JS=""
-for COUNTRY_CODE in $COUNTRY_CODE_ARRAY; do
-    IMAGE_ARRAY=$(listDirectoryContent "data/${COUNTRY_CODE}/")
-    IMAGE_OBJECT_JS+="\"$COUNTRY_CODE\": $(bashArrayToJsArray "${IMAGE_ARRAY[@]}"),"
-    #insertIntoHtmlFile "IMAGE_ARRAY_${COUNTRY_CODE}" "const imageArray${COUNTRY_CODE} = ${IMAGE_ARRAY_JS};"
+
+for COUNTRY in "${COUNTRY_ARRAY[@]}"; do
+    IMAGE_ARRAY=$(listImages "data/${COUNTRY}/")
+    IMAGE_OBJECT_JS+="\"$COUNTRY\": $(bashListToJsArray "${IMAGE_ARRAY[@]}"), "
 done
 
-IMAGE_OBJECT_JS="{${IMAGE_OBJECT_JS%,}}"
-echo $IMAGE_OBJECT_JS
-
+IMAGE_OBJECT_JS="{${IMAGE_OBJECT_JS%, }}"
 insertIntoHtmlFile "IMAGE_OBJECT" "const imageObject = ${IMAGE_OBJECT_JS};"
 
 exit 0
-
-# Use sed to replace the placeholder <TEST> with the replacement text
-sed -i '' "s/<COUNTRY_CODE_ARRAY>/${REPLACEMENT_TEXT}/g" "index.html"
